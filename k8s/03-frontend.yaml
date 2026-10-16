@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: nava9
+spec:
+  selector:
+    app: nava9-user-ui
+  ports:
+    - port: 3000
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nava9-user-ui
+  namespace: nava9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nava9-user-ui
+  template:
+    metadata:
+      labels:
+        app: nava9-user-ui
+    spec:
+      containers:
+        - name: frontend
+          image: nava9-user-ui:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { memory: 256Mi }

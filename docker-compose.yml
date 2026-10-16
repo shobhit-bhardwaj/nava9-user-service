@@ -1,0 +1,45 @@
+services:
+  app:
+    build: ./app
+    image: nava9-user-service:latest
+    container_name: nava9-user-service
+    ports:
+      - "5000:5000"
+    env_file: app/.env.docker
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:5000
+    image: nava9-user-ui:latest
+    container_name: nava9-user-ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.4
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: nava9_user_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysqldata:

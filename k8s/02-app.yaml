@@ -1,0 +1,75 @@
+# Same values as app/.env.docker
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: nava9
+data:
+  APP_NAME: "Nava9 User Application (Docker)"
+  APP_ENVIRONMENT: "Docker"
+  VERSION: "1.0.0"
+  DATABASE_URL: "mysql+pymysql://root:12345@mysql-db:3306/nava9_user_db"
+  LOG_DIR: "/app/logs"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: nava9
+spec:
+  selector:
+    app: nava9-user-service
+  ports:
+    - port: 5000
+      targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nava9-user-service
+  namespace: nava9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nava9-user-service
+  template:
+    metadata:
+      labels:
+        app: nava9-user-service
+    spec:
+      # replaces compose's depends_on: service_healthy
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.36
+          command: ["sh", "-c", "until nc -z mysql-db 3306; do echo waiting for db; sleep 3; done"]
+      containers:
+        - name: app
+          image: nava9-user-service:latest
+          imagePullPolicy: IfNotPresent     # use the locally built image
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: app-config
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { memory: 512Mi }
+          volumeMounts:
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: logs
+          emptyDir: {}
