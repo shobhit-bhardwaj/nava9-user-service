@@ -48,7 +48,7 @@ pipeline {
         stage('Build images') {
             steps {
                 // builds the backend (app/Dockerfile) and the UI (frontend/Dockerfile)
-                sh 'docker compose build --pull'
+                sh 'docker compose build --no-cache --pull'
             }
         }
 
