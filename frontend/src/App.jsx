@@ -169,7 +169,7 @@ export default function App() {
       <main className="layout">
         <section className="panel">
           <div className="panel-head">
-            <h2>{isEditing ? `Edit user ${editingId}` : "Add user"}</h2>
+            <h2>{isEditing ? `Edit user ${editingId}` : "Create User"}</h2>
           </div>
           <form onSubmit={handleSubmit} className="form">
             <label>
