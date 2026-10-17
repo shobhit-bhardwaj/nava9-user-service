@@ -14,5 +14,5 @@ RUN adduser --disabled-password --no-create-home appuser \
     && chown appuser:appuser /app/logs
 USER appuser
 
-EXPOSE 5000
-CMD ["fastapi", "run", "main.py", "--host", "0.0.0.0", "--port", "5000"]
+EXPOSE 3050
+CMD ["fastapi", "run", "main.py", "--host", "0.0.0.0", "--port", "3050"]

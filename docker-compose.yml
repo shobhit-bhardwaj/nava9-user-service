@@ -4,7 +4,7 @@ services:
     image: nava9-user-service:latest
     container_name: nava9-user-service
     ports:
-      - "5000:5000"
+      - "3050:3050"
     env_file: app/.env.docker
     volumes:
       - ./logs:/app/logs
@@ -16,7 +16,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_BASE_URL: http://localhost:5000
+        VITE_API_BASE_URL: http://localhost:3050
     image: nava9-user-ui:latest
     container_name: nava9-user-ui
     ports:

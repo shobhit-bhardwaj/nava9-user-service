@@ -5,9 +5,9 @@ pip install "fastapi[standard]"
 pip freeze > requirements.txt
 
 export PYTHONDONTWRITEBYTECODE=1
-fastapi dev main.py --port 5000
+fastapi dev main.py --port 3050
 
-http://localhost:5000/docs
+http://localhost:3050/docs
 
 
 
@@ -26,7 +26,7 @@ docker compose build --no-cache && docker compose up -d
 docker-compose down
 
 UI        : http://localhost:3000
-API docs  : http://localhost:5000/docs
+API docs  : http://localhost:3050/docs
 
 
 docker exec -it mysql-db mysql -u root -p12345
@@ -44,7 +44,7 @@ docker compose build --no-cache
 kubectl apply -f k8s/
 
 kubectl port-forward -n nava9 svc/frontend 3000:3000
-kubectl port-forward -n nava9 svc/app 5000:5000
+kubectl port-forward -n nava9 svc/app 3050:3050
 
 kubectl get all -n nava9 -o wide
 kubectl get pods -n nava9 -o wide

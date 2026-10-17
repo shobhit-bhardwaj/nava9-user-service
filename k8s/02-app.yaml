@@ -20,8 +20,8 @@ spec:
   selector:
     app: nava9-user-service
   ports:
-    - port: 5000
-      targetPort: 5000
+    - port: 3050
+      targetPort: 3050
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -48,20 +48,20 @@ spec:
           image: nava9-user-service:latest
           imagePullPolicy: IfNotPresent     # use the locally built image
           ports:
-            - containerPort: 5000
+            - containerPort: 3050
           envFrom:
             - configMapRef:
                 name: app-config
           readinessProbe:
             httpGet:
               path: /
-              port: 5000
+              port: 3050
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /
-              port: 5000
+              port: 3050
             initialDelaySeconds: 15
             periodSeconds: 20
           resources:
