@@ -211,7 +211,7 @@ export default function App() {
             </label>
             <div className="actions">
               <button className="primary" type="submit" disabled={saving}>
-                {saving ? "Saving…" : isEditing ? "Save changes" : "Add user"}
+                {saving ? "Saving…" : isEditing ? "Save changes" : "Create User"}
               </button>
               {isEditing && (
                 <button type="button" onClick={resetForm}>
